@@ -25,7 +25,7 @@ I built this because existing watch-together solutions either required uploading
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/watch2gether-local.git
+   git clone https://github.com/rayenking/watch2gether-local.git
    cd watch2gether-local
    ```
 
