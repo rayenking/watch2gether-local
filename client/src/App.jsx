@@ -54,7 +54,29 @@ function App() {
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+      const fileType = selectedFile.type;
+      const fileName = selectedFile.name.toLowerCase();
+
+      // Log file info for debugging
+      console.log('📁 Selected file:', {
+        name: selectedFile.name,
+        type: fileType,
+        size: `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`
+      });
+
+      // Check if it's a video file
+      if (!fileType.startsWith('video/') && !fileName.endsWith('.mkv') && !fileName.endsWith('.mp4') && !fileName.endsWith('.webm')) {
+        alert('Please select a video file (MP4, MKV, WebM, etc.)');
+        return;
+      }
+
+      // Special note for MKV files
+      if (fileName.endsWith('.mkv') || fileType === 'video/x-matroska') {
+        console.log('⚠️ MKV file detected. Note: Browser support varies based on codecs used.');
+      }
+
+      setFile(selectedFile);
     }
   };
 
@@ -225,7 +247,7 @@ function App() {
               >
                 <Upload style={{ width: '1rem', height: '1rem', color: '#87CEEB', strokeWidth: 2 }} />
                 <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#2D3748' }}>{file ? 'Change Video' : 'Select Video'}</span>
-                <input type="file" accept="video/*" onChange={handleFileChange} style={{ display: 'none' }} />
+                <input type="file" accept="video/*,.mkv,.mp4,.webm,.avi,.mov" onChange={handleFileChange} style={{ display: 'none' }} />
               </label>
             </div>
 
