@@ -81,7 +81,7 @@ function App() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', backgroundColor: '#F5F8FF' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', backgroundColor: '#FFF5F9' }}>
 
       {/* Header */}
       <header style={{
@@ -91,15 +91,15 @@ function App() {
         alignItems: 'center',
         gap: '0.75rem',
         backgroundColor: 'white',
-        borderBottom: '2px solid #87CEEB',
+        borderBottom: '2px solid #FACCDD',
         boxShadow: '0 2px 8px rgba(135, 206, 235, 0.1)'
       }}>
-        <div style={{ padding: '0.5rem', backgroundColor: '#87CEEB', borderRadius: '0.5rem' }}>
+        <div style={{ padding: '0.5rem', backgroundColor: '#FACCDD', borderRadius: '0.5rem' }}>
           <Film style={{ width: '1.25rem', height: '1.25rem', color: 'white', strokeWidth: 2.5 }} />
         </div>
         <div>
           <h1 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#2D3748', margin: 0 }}>Watch2Gether</h1>
-          <span style={{ fontSize: '0.75rem', color: '#87CEEB', fontWeight: '600' }}>LOCAL SYNC</span>
+          <span style={{ fontSize: '0.75rem', color: '#FACCDD', fontWeight: '600' }}>LOCAL SYNC</span>
         </div>
       </header>
 
@@ -119,7 +119,7 @@ function App() {
               backgroundColor: 'white',
               borderRadius: '1rem',
               padding: '2rem',
-              border: '2px solid #87CEEB',
+              border: '2px solid #FACCDD',
               boxShadow: '0 8px 24px rgba(135, 206, 235, 0.15)'
             }}>
 
@@ -127,11 +127,11 @@ function App() {
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
                 <div style={{
                   padding: '1.25rem',
-                  backgroundColor: '#F0F9FF',
+                  backgroundColor: '#FFF0F5',
                   borderRadius: '9999px',
-                  border: '3px solid #87CEEB'
+                  border: '3px solid #FACCDD'
                 }}>
-                  <Users style={{ width: '2.5rem', height: '2.5rem', color: '#87CEEB', strokeWidth: 2 }} />
+                  <Users style={{ width: '2.5rem', height: '2.5rem', color: '#FACCDD', strokeWidth: 2 }} />
                 </div>
               </div>
 
@@ -165,7 +165,7 @@ function App() {
                     textAlign: 'center',
                     outline: 'none'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#87CEEB'}
+                  onFocus={(e) => e.target.style.borderColor = '#FACCDD'}
                   onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                 />
 
@@ -173,7 +173,7 @@ function App() {
                   onClick={joinRoom}
                   disabled={!roomId}
                   style={{
-                    backgroundColor: roomId ? '#87CEEB' : '#CBD5E1',
+                    backgroundColor: roomId ? '#FACCDD' : '#CBD5E1',
                     border: 'none',
                     borderRadius: '0.75rem',
                     padding: '0.875rem 1.75rem',
@@ -185,10 +185,10 @@ function App() {
                     transition: 'all 0.2s'
                   }}
                   onMouseEnter={(e) => {
-                    if (roomId) e.target.style.backgroundColor = '#6BB6E8';
+                    if (roomId) e.target.style.backgroundColor = '#F9B3D9';
                   }}
                   onMouseLeave={(e) => {
-                    if (roomId) e.target.style.backgroundColor = '#87CEEB';
+                    if (roomId) e.target.style.backgroundColor = '#FACCDD';
                   }}
                 >
                   Enter Theater
@@ -217,7 +217,7 @@ function App() {
                     width: '0.5rem',
                     height: '0.5rem',
                     borderRadius: '9999px',
-                    backgroundColor: '#87CEEB'
+                    backgroundColor: '#FACCDD'
                   }}></span>
                 </div>
 
@@ -225,15 +225,15 @@ function App() {
                   <span style={{ fontSize: '0.75rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600' }}>Room</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#2D3748', fontFamily: 'monospace' }}>{roomId}</span>
-                    <span style={{ fontSize: '0.75rem', color: '#87CEEB', fontWeight: '600' }}>● SYNCED</span>
+                    <span style={{ fontSize: '0.75rem', color: '#FACCDD', fontWeight: '600' }}>● SYNCED</span>
                   </div>
                 </div>
               </div>
 
               {/* File Upload */}
               <label style={{
-                backgroundColor: '#F0F9FF',
-                border: '2px solid #87CEEB',
+                backgroundColor: '#FFF0F5',
+                border: '2px solid #FACCDD',
                 borderRadius: '0.5rem',
                 padding: '0.625rem 1.25rem',
                 display: 'flex',
@@ -242,10 +242,10 @@ function App() {
                 cursor: 'pointer',
                 transition: 'all 0.2s'
               }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#87CEEB'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#F0F9FF'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FACCDD'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FFF0F5'}
               >
-                <Upload style={{ width: '1rem', height: '1rem', color: '#87CEEB', strokeWidth: 2 }} />
+                <Upload style={{ width: '1rem', height: '1rem', color: '#FACCDD', strokeWidth: 2 }} />
                 <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#2D3748' }}>{file ? 'Change Video' : 'Select Video'}</span>
                 <input type="file" accept="video/*,.mkv,.mp4,.webm,.avi,.mov" onChange={handleFileChange} style={{ display: 'none' }} />
               </label>

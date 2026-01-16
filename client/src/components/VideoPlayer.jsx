@@ -324,7 +324,7 @@ const VideoPlayer = ({ file, socket, roomId }) => {
                                 appearance: 'none',
                                 cursor: 'pointer',
                                 marginBottom: '1rem',
-                                background: `linear-gradient(to right, #87CEEB 0%, #87CEEB ${(currentTime / duration) * 100}%, rgba(255,255,255,0.2) ${(currentTime / duration) * 100}%, rgba(255,255,255,0.2) 100%)`
+                                background: `linear-gradient(to right, #FACCDD 0%, #FACCDD ${(currentTime / duration) * 100}%, rgba(255,255,255,0.2) ${(currentTime / duration) * 100}%, rgba(255,255,255,0.2) 100%)`
                             }}
                         />
 
@@ -353,7 +353,7 @@ const VideoPlayer = ({ file, socket, roomId }) => {
                                         alignItems: 'center',
                                         justifyContent: 'center'
                                     }}
-                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#87CEEB'}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FACCDD'}
                                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
                                 >
                                     {isPlaying ?
@@ -378,7 +378,7 @@ const VideoPlayer = ({ file, socket, roomId }) => {
                                         justifyContent: 'center',
                                         gap: '0.25rem'
                                     }}
-                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#87CEEB'}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FACCDD'}
                                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
                                     title="Skip backward 5s (←)"
                                 >
@@ -402,7 +402,7 @@ const VideoPlayer = ({ file, socket, roomId }) => {
                                         justifyContent: 'center',
                                         gap: '0.25rem'
                                     }}
-                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#87CEEB'}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FACCDD'}
                                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
                                     title="Skip forward 5s (→)"
                                 >
@@ -425,7 +425,7 @@ const VideoPlayer = ({ file, socket, roomId }) => {
                                         alignItems: 'center',
                                         justifyContent: 'center'
                                     }}
-                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#87CEEB'}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FACCDD'}
                                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
                                     title="Sync time with others"
                                 >
@@ -449,7 +449,7 @@ const VideoPlayer = ({ file, socket, roomId }) => {
                                             alignItems: 'center',
                                             transition: 'color 0.2s'
                                         }}
-                                        onMouseEnter={(e) => e.currentTarget.style.color = '#87CEEB'}
+                                        onMouseEnter={(e) => e.currentTarget.style.color = '#FACCDD'}
                                         onMouseLeave={(e) => e.currentTarget.style.color = 'white'}
                                     >
                                         {isMuted || volume === 0 ?
@@ -470,7 +470,7 @@ const VideoPlayer = ({ file, socket, roomId }) => {
                                             borderRadius: '9999px',
                                             appearance: 'none',
                                             cursor: 'pointer',
-                                            background: `linear-gradient(to right, #87CEEB 0%, #87CEEB ${volume * 100}%, rgba(255,255,255,0.2) ${volume * 100}%, rgba(255,255,255,0.2) 100%)`
+                                            background: `linear-gradient(to right, #FACCDD 0%, #FACCDD ${volume * 100}%, rgba(255,255,255,0.2) ${volume * 100}%, rgba(255,255,255,0.2) 100%)`
                                         }}
                                     />
                                 </div>
@@ -498,7 +498,7 @@ const VideoPlayer = ({ file, socket, roomId }) => {
                                     alignItems: 'center',
                                     transition: 'color 0.2s'
                                 }}
-                                onMouseEnter={(e) => e.currentTarget.style.color = '#87CEEB'}
+                                onMouseEnter={(e) => e.currentTarget.style.color = '#FACCDD'}
                                 onMouseLeave={(e) => e.currentTarget.style.color = 'white'}
                             >
                                 <Maximize size={22} />
@@ -534,7 +534,7 @@ const VideoPlayer = ({ file, socket, roomId }) => {
             {file && showControls && (
                 <div className={`absolute top-6 left-6 pointer-events-none transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
                     <div className="flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-sm rounded-lg">
-                        <div className="w-2 h-2 rounded-full bg-[#87CEEB]"></div>
+                        <div className="w-2 h-2 rounded-full bg-[#FACCDD]"></div>
                         <h3 className="text-sm font-semibold text-white max-w-xl truncate">{file.name}</h3>
                     </div>
                 </div>

@@ -7,8 +7,8 @@
 }
 
 :root {
-  /* Sky Blue & iPhone 15 Pink - SOLID COLORS */
-  --sky-blue: #87CEEB;
+  /* Pink & iPhone 15 Pink - SOLID COLORS */
+  --pink: #FACCDD;
   --pink-iphone: #FACCDD;
 
   /* Background */
@@ -65,7 +65,7 @@ body {
 
 /* Buttons - SOLID COLORS, NO GRADIENTS */
 .btn-primary {
-  background: var(--sky-blue);
+  background: var(--pink);
   border: none;
   border-radius: 12px;
   padding: 14px 28px;
@@ -77,7 +77,7 @@ body {
 }
 
 .btn-primary:hover {
-  background: #9DD9F5;
+  background: #FFB3D9;
   transform: translateY(-1px);
 }
 
@@ -101,7 +101,7 @@ body {
 
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: var(--sky-blue);
+  border-color: var(--pink);
 }
 
 /* Inputs */
@@ -119,12 +119,54 @@ input[type="text"] {
 
 input[type="text"]:focus {
   outline: none;
-  border-color: var(--sky-blue);
+  border-color: var(--pink);
   background: rgba(255, 255, 255, 0.05);
 }
 
 input[type="text"]::placeholder {
   color: var(--text-secondary);
+}
+
+/* Custom range slider styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Webkit (Chrome, Safari, Edge) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #FACCDD;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 3px rgba(250, 204, 221, 0.5);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: #F9B3D9;
+  transform: scale(1.1);
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #FACCDD;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 3px rgba(250, 204, 221, 0.5);
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  background: #F9B3D9;
+  transform: scale(1.1);
 }
 
 /* Scrollbar */
@@ -137,10 +179,10 @@ input[type="text"]::placeholder {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--sky-blue);
+  background: var(--pink);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9DD9F5;
+  background: #FFB3D9;
 }
