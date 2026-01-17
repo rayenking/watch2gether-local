@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Play, Pause, Maximize, Volume2, VolumeX, RotateCw, SkipBack, SkipForward } from 'lucide-react';
 
-const VideoPlayer = ({ file, socket, roomId }) => {
+const VideoPlayer = ({ file, socket, roomId, onToggleFullscreen }) => {
     const videoRef = useRef(null);
     const containerRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -161,14 +161,7 @@ const VideoPlayer = ({ file, socket, roomId }) => {
         setIsMuted(vol === 0);
     };
 
-    const toggleFullscreen = () => {
-        if (!containerRef.current) return;
-        if (!document.fullscreenElement) {
-            containerRef.current.requestFullscreen();
-        } else {
-            document.exitFullscreen();
-        }
-    };
+
 
     // Skip forward/backward
     const skipForward = () => {
@@ -273,7 +266,7 @@ const VideoPlayer = ({ file, socket, roomId }) => {
             ref={containerRef}
             style={{
                 width: '100%',
-                aspectRatio: '16 / 9',
+                height: '100%', // Ensure it fills parent
                 backgroundColor: '#000',
                 position: 'relative',
                 overflow: 'hidden'
@@ -486,20 +479,23 @@ const VideoPlayer = ({ file, socket, roomId }) => {
                                 </span>
                             </div>
 
-                            {/* Right Side - Fullscreen */}
+                            {/* Fullscreen Toggle */}
                             <button
-                                onClick={toggleFullscreen}
+                                onClick={onToggleFullscreen}
                                 style={{
-                                    color: 'white',
-                                    backgroundColor: 'transparent',
+                                    padding: '0.5rem',
+                                    borderRadius: '0.5rem',
+                                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
                                     border: 'none',
+                                    color: 'white',
                                     cursor: 'pointer',
+                                    transition: 'all 0.2s',
                                     display: 'flex',
                                     alignItems: 'center',
-                                    transition: 'color 0.2s'
+                                    justifyContent: 'center'
                                 }}
-                                onMouseEnter={(e) => e.currentTarget.style.color = '#FACCDD'}
-                                onMouseLeave={(e) => e.currentTarget.style.color = 'white'}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FACCDD'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
                             >
                                 <Maximize size={22} />
                             </button>
@@ -544,3 +540,4 @@ const VideoPlayer = ({ file, socket, roomId }) => {
 };
 
 export default VideoPlayer;
+

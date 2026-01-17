@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import VideoPlayer from './components/VideoPlayer';
+import Chat from './components/Chat';
 import { Upload, Users, Film, Sparkles } from 'lucide-react';
 
 // Backend URL from environment variable
@@ -12,12 +13,68 @@ function App() {
   const [joined, setJoined] = useState(false);
   const [file, setFile] = useState(null);
 
+  // Chat & Layout State
+  const [messages, setMessages] = useState([
+    { type: 'system', text: 'Welcome to the room! Chat is ready.', timestamp: Date.now() }
+  ]);
+  const [username, setUsername] = useState('Anonymous');
+  const [ping, setPing] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showChatInFullscreen, setShowChatInFullscreen] = useState(false);
+  const theaterRef = useRef(null);
+
+  // Effect 1: Handle beforeunload (Prevent accidental closing)
   useEffect(() => {
-    // Clean up socket on unmount
-    return () => {
-      if (socket) socket.disconnect();
+    const handleBeforeUnload = (e) => {
+      if (joined) {
+        e.preventDefault();
+        e.returnValue = ''; // Chrome requires this to be set
+      }
     };
-  }, [socket]);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [joined]); // Only re-run if joined state changes
+
+  // Effect 2: Handle fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+      if (!document.fullscreenElement) {
+        setShowChatInFullscreen(false); // Reset chat visibility on exit
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []); // Run once
+
+  // Effect 3: Socket cleanup
+  useEffect(() => {
+    return () => {
+      if (socket) {
+        console.log('Cleaning up socket on socket change/unmount');
+        socket.disconnect();
+      }
+    };
+  }, [socket]); // Only re-run if socket instance changes
+
+  // Effect 4: Ping Interval
+  useEffect(() => {
+    if (!socket || !joined) return;
+
+    const interval = setInterval(() => {
+      const start = Date.now();
+      socket.emit('ping', () => {
+        const latency = Date.now() - start;
+        setPing(latency);
+      });
+    }, 2000); // Check every 2 seconds
+
+    return () => clearInterval(interval);
+  }, [socket, joined]);
 
   const joinRoom = () => {
     if (!roomId) return;
@@ -42,6 +99,12 @@ function App() {
       setJoined(true);
     });
 
+    // Chat Message Handler
+    newSocket.on('chat_message', (msg) => {
+      console.log('📩 Client Received Chat Message:', msg);
+      setMessages((prev) => [...prev, msg]);
+    });
+
     newSocket.on('connect_error', (error) => {
       console.error('❌ Connection error:', error.message);
       console.error('Backend URL:', SOCKET_URL);
@@ -50,6 +113,32 @@ function App() {
     newSocket.on('disconnect', (reason) => {
       console.log('⚠️ Disconnected:', reason);
     });
+  };
+
+  const handleSendMessage = (text) => {
+    if (socket && roomId) {
+      console.log(`📤 Sending chat message: "${text}" to room: ${roomId}`);
+      // Optimistic update (optional, but waiting for server echo is safer for order)
+      socket.emit('chat_message', { roomId, text, userId: username });
+    } else {
+      console.error('❌ Cannot send message: Socket or RoomID missing', { socket: !!socket, roomId });
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (!theaterRef.current) return;
+
+    if (!document.fullscreenElement) {
+      theaterRef.current.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  const toggleFullscreenChat = () => {
+    setShowChatInFullscreen(!showChatInFullscreen);
   };
 
   const handleFileChange = (e) => {
@@ -198,7 +287,7 @@ function App() {
           </div>
         ) : (
           // Theater Room
-          <div style={{ width: '100%', maxWidth: '72rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div style={{ width: '100%', maxWidth: '80rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
             {/* Status Bar */}
             <div style={{
@@ -251,15 +340,99 @@ function App() {
               </label>
             </div>
 
-            {/* Video Player */}
-            <div style={{
-              borderRadius: '1rem',
-              overflow: 'hidden',
-              border: '2px solid #E2E8F0',
-              backgroundColor: '#000',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
-            }}>
-              <VideoPlayer file={file} socket={socket} roomId={roomId} />
+            {/* Theater Container (Wraps Video and Chat for Fullscreen) */}
+            <div
+              ref={theaterRef}
+              className="theater-container"
+              style={{
+                display: 'flex',
+                alignItems: 'stretch', // Ensure both stretch to full height
+                justifyContent: 'center',
+                backgroundColor: isFullscreen ? 'black' : 'transparent',
+                // In fullscreen with chat open: side-by-side (gap 0 or small). Normal: gap 1rem
+                gap: isFullscreen ? '0' : '1rem',
+                borderRadius: isFullscreen ? 0 : '1rem',
+                overflow: 'hidden',
+                // Fullscreen: 100vh. Normal: Use aspect ratio to define height based on width
+                height: isFullscreen ? '100vh' : 'auto',
+                aspectRatio: isFullscreen ? 'auto' : '16/9',
+                position: 'relative',
+                border: isFullscreen ? 'none' : '2px solid #E2E8F0',
+                boxShadow: isFullscreen ? 'none' : '0 8px 24px rgba(0,0,0,0.1)',
+              }}
+            >
+              {/* Video Area */}
+              <div style={{
+                flex: 1,
+                position: 'relative',
+                height: '100%',
+                minWidth: 0, // Important for flex text/content truncation if needed
+                backgroundColor: 'black',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <VideoPlayer
+                  file={file}
+                  socket={socket}
+                  roomId={roomId}
+                  onToggleFullscreen={toggleFullscreen}
+                />
+
+                {/* Fullscreen Chat Toggle Button */}
+                {isFullscreen && (
+                  <button
+                    onClick={toggleFullscreenChat}
+                    style={{
+                      position: 'absolute',
+                      top: '1.5rem',
+                      right: '1.5rem',
+                      backgroundColor: showChatInFullscreen ? '#FACCDD' : 'rgba(255,255,255,0.1)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '9999px',
+                      padding: '0.5rem',
+                      cursor: 'pointer',
+                      zIndex: 60,
+                      backdropFilter: 'blur(4px)',
+                      display: 'flex', // Always visible in fullscreen
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all 0.2s'
+                    }}
+                    title={showChatInFullscreen ? "Hide Chat" : "Show Chat"}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  </button>
+                )}
+              </div>
+
+              {/* Chat Area */}
+              {/* Always rendered if !fullscreen, OR if fullscreen AND showChat */}
+              <div style={{
+                width: (!isFullscreen || showChatInFullscreen) ? '320px' : '0px',
+                overflow: 'hidden', // Hide content when width is 0
+                transition: 'width 0.3s ease-in-out', // Smooth slide
+                display: 'flex', // Flex to fill height
+                flexDirection: 'column',
+                backgroundColor: isFullscreen ? '#0f1014' : 'white', // Dark mode BG in fullscreen
+                borderLeft: isFullscreen ? '1px solid #333' : 'none',
+                flexShrink: 0 // Prevent video from squishing chat
+              }}>
+                <Chat
+                  messages={messages}
+                  onSendMessage={handleSendMessage}
+                  socket={socket}
+                  roomId={roomId}
+                  isConnected={socket?.connected}
+                  ping={ping}
+                  username={username}
+                  onUsernameChange={setUsername}
+                  overlay={false} // No longer using absolute overlay
+                  darkMode={isFullscreen} // Pass dark mode prop
+                  onClose={toggleFullscreenChat}
+                />
+              </div>
             </div>
           </div>
         )}
