@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import VideoPlayer from './components/VideoPlayer';
 import Chat from './components/Chat';
+import NotificationToast from './components/NotificationToast';
 import { Upload, Users, Film, Sparkles } from 'lucide-react';
 
 // Backend URL from environment variable
@@ -21,6 +22,14 @@ function App() {
   const [ping, setPing] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showChatInFullscreen, setShowChatInFullscreen] = useState(false);
+
+  // Notification State
+  const [notificationSettings, setNotificationSettings] = useState({
+    enabled: true,
+    position: 'top-right' // top-right, top-left, bottom-right, bottom-left
+  });
+  const [activeNotifications, setActiveNotifications] = useState([]);
+  const [fullscreenTheme, setFullscreenTheme] = useState('light');
   const theaterRef = useRef(null);
 
   // Effect 1: Handle beforeunload (Prevent accidental closing)
@@ -103,6 +112,26 @@ function App() {
     newSocket.on('chat_message', (msg) => {
       console.log('📩 Client Received Chat Message:', msg);
       setMessages((prev) => [...prev, msg]);
+
+      // Notification Logic
+      if (document.fullscreenElement &&
+        !showChatInFullscreen &&
+        notificationSettings.enabled &&
+        msg.type !== 'system' &&
+        msg.userId !== username
+      ) {
+        const notifId = Date.now();
+        setActiveNotifications(prev => [...prev, {
+          id: notifId,
+          text: msg.text,
+          sender: msg.userId
+        }]);
+
+        // Auto remove after 4 seconds
+        setTimeout(() => {
+          setActiveNotifications(prev => prev.filter(n => n.id !== notifId));
+        }, 4000);
+      }
     });
 
     newSocket.on('connect_error', (error) => {
@@ -361,6 +390,15 @@ function App() {
                 boxShadow: isFullscreen ? 'none' : '0 8px 24px rgba(0,0,0,0.1)',
               }}
             >
+              {/* Notification Toast Layer */}
+              {isFullscreen && (
+                <NotificationToast
+                  notifications={activeNotifications}
+                  position={notificationSettings.position}
+                  theme={fullscreenTheme}
+                />
+              )}
+
               {/* Video Area */}
               <div style={{
                 flex: 1,
@@ -429,8 +467,12 @@ function App() {
                   username={username}
                   onUsernameChange={setUsername}
                   overlay={false} // No longer using absolute overlay
-                  darkMode={isFullscreen} // Pass dark mode prop
+                  darkMode={isFullscreen && fullscreenTheme === 'dark'} // Pass dark mode prop based on theme
                   onClose={toggleFullscreenChat}
+                  notificationSettings={notificationSettings}
+                  onUpdateSettings={setNotificationSettings}
+                  fullscreenTheme={fullscreenTheme}
+                  onThemeChange={setFullscreenTheme}
                 />
               </div>
             </div>

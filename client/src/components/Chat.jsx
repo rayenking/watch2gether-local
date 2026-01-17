@@ -1,9 +1,25 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, X, MessageSquare, User } from 'lucide-react';
+import { Send, X, MessageSquare, User, Settings } from 'lucide-react';
 
-const Chat = ({ messages, onSendMessage, socket, roomId, isConnected = false, ping = 0, darkMode = false, onClose, username, onUsernameChange }) => {
+const Chat = ({
+    messages,
+    onSendMessage,
+    socket,
+    roomId,
+    isConnected = false,
+    ping = 0,
+    darkMode = false,
+    onClose,
+    username,
+    onUsernameChange,
+    notificationSettings = { enabled: true, position: 'top-right' },
+    onUpdateSettings,
+    fullscreenTheme = 'dark',
+    onThemeChange
+}) => {
     const [newMessage, setNewMessage] = useState('');
+    const [showSettings, setShowSettings] = useState(false);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
 
@@ -82,8 +98,105 @@ const Chat = ({ messages, onSendMessage, socket, roomId, isConnected = false, pi
                         )}
                     </div>
                 </div>
-                {/* Close button not strictly needed if we toggle from outside, but kept for consistency if desired */}
+
+                {/* Settings Toggle */}
+                <button
+                    onClick={() => setShowSettings(!showSettings)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: darkMode ? '#94A3B8' : '#64748B' }}
+                    title="Chat Settings"
+                >
+                    <Settings size={18} />
+                </button>
             </div>
+
+            {/* Settings Menu Overlay */}
+            {showSettings && (
+                <div style={{
+                    padding: '1rem',
+                    backgroundColor: darkMode ? '#0f1014' : '#F1F5F9',
+                    borderBottom: darkMode ? '1px solid #333' : '1px solid #E2E8F0',
+                    fontSize: '0.85rem'
+                }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: darkMode ? 'white' : '#334155' }}>
+                        Notifications (Fullscreen)
+                    </div>
+
+                    {/* Theme Selector (Only relevant for fullscreen preference) */}
+                    {onThemeChange && (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                            <span>Theme</span>
+                            <div style={{ display: 'flex', backgroundColor: darkMode ? '#1E293B' : '#E2E8F0', borderRadius: '0.375rem', padding: '0.15rem' }}>
+                                <button
+                                    onClick={() => onThemeChange('light')}
+                                    style={{
+                                        border: 'none',
+                                        background: fullscreenTheme === 'light' ? 'white' : 'transparent',
+                                        color: fullscreenTheme === 'light' ? 'black' : (darkMode ? '#94A3B8' : '#64748B'),
+                                        borderRadius: '0.25rem',
+                                        padding: '0.2rem 0.5rem',
+                                        fontSize: '0.75rem',
+                                        cursor: 'pointer',
+                                        boxShadow: fullscreenTheme === 'light' ? '0 1px 2px rgba(0,0,0,0.1)' : 'none'
+                                    }}
+                                >
+                                    Light
+                                </button>
+                                <button
+                                    onClick={() => onThemeChange('dark')}
+                                    style={{
+                                        border: 'none',
+                                        background: fullscreenTheme === 'dark' ? (darkMode ? '#334155' : 'white') : 'transparent', // slightly complex logic for active state bg
+                                        backgroundColor: fullscreenTheme === 'dark' ? (darkMode ? '#475569' : 'white') : 'transparent',
+                                        color: fullscreenTheme === 'dark' ? 'white' : (darkMode ? '#94A3B8' : '#64748B'),
+                                        borderRadius: '0.25rem',
+                                        padding: '0.2rem 0.5rem',
+                                        fontSize: '0.75rem',
+                                        cursor: 'pointer',
+                                        boxShadow: fullscreenTheme === 'dark' ? '0 1px 2px rgba(0,0,0,0.1)' : 'none'
+                                    }}
+                                >
+                                    Dark
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Toggle Enabled */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                        <span>Show Popup</span>
+                        <input
+                            type="checkbox"
+                            checked={notificationSettings.enabled}
+                            onChange={(e) => onUpdateSettings({ ...notificationSettings, enabled: e.target.checked })}
+                            style={{ cursor: 'pointer' }}
+                        />
+                    </div>
+
+                    {/* Position Selector */}
+                    {notificationSettings.enabled && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                            <span style={{ fontSize: '0.8rem', color: darkMode ? '#94A3B8' : '#64748B' }}>Position</span>
+                            <select
+                                value={notificationSettings.position}
+                                onChange={(e) => onUpdateSettings({ ...notificationSettings, position: e.target.value })}
+                                style={{
+                                    padding: '0.3rem',
+                                    borderRadius: '0.25rem',
+                                    border: '1px solid #CBD5E1',
+                                    backgroundColor: darkMode ? '#1E293B' : 'white',
+                                    color: darkMode ? 'white' : 'black',
+                                    outline: 'none'
+                                }}
+                            >
+                                <option value="top-right">Top Right</option>
+                                <option value="top-left">Top Left</option>
+                                <option value="bottom-right">Bottom Right</option>
+                                <option value="bottom-left">Bottom Left</option>
+                            </select>
+                        </div>
+                    )}
+                </div>
+            )}
 
             {/* Username Input */}
             <div style={{
