@@ -7,11 +7,15 @@ I built this because existing watch-together solutions either required uploading
 ## Features
 
 - **Real-time sync** - Play, pause, and seek are instantly synchronized across all viewers
+- **Live Chat** - Real-time messaging with side-by-side or split-screen support
+- **User Identity** - Set your username to identify yourself in the chat
+- **Connection Status** - Live latency (ping) indicator to monitor your connection quality
 - **100% local playback** - Videos never leave your device, just sync commands are shared
 - **Zero upload time** - No waiting for videos to upload or process
 - **Lightweight** - Just Socket.IO for sync, plain video elements for playback
 - **Mobile friendly** - Works on phones and tablets, not just desktop
 - **Keyboard shortcuts** - Arrow keys to skip, spacebar to play/pause, etc.
+- **CI/CD** - Automated builds and checks via GitHub Actions
 
 ## Quick Start
 
@@ -173,7 +177,6 @@ MIT - feel free to use this for whatever. If you make something cool with it, I'
 
 Pull requests welcome! This started as a weekend project so there's definitely room for improvement. Some ideas:
 
-- Add chat functionality
 - Support for subtitles/captions
 - Quality selection for different network speeds
 - Persistent rooms (currently rooms reset on server restart)
